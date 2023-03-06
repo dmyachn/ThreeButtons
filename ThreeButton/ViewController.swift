@@ -13,8 +13,6 @@ class ViewController: UIViewController {
     lazy var button2 = CustomButton(buttonTitle: "Long button title")
     lazy var button3 = CustomButton(buttonTitle: "Show sheet")
     
-    lazy var isShowSheet = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -25,36 +23,9 @@ class ViewController: UIViewController {
     func setupView(){
         view.backgroundColor = .white
         
-        
         view.addSubview(button1)
         view.addSubview(button2)
         view.addSubview(button3)
-        
-        button1.configurationUpdateHandler = { button in
-            if self.isShowSheet{
-                button.configuration?.background.backgroundColor = .gray
-            } else {
-                button.configuration?.background.backgroundColor = .systemMint
-            }
-        }
-        
-        button2.configurationUpdateHandler = { button in
-            if self.isShowSheet{
-                button.configuration?.background.backgroundColor = .gray
-            } else {
-                button.configuration?.background.backgroundColor = .systemMint
-            }
-        }
-        
-        button3.configurationUpdateHandler = { button in
-            if self.isShowSheet{
-                button.configuration?.background.backgroundColor = .gray
-            } else {
-                button.configuration?.background.backgroundColor = .systemMint
-            }
-        }
-
-        
         
         button3.addTarget(self, action: #selector(self.showSheet), for: .touchUpInside)
         
@@ -71,27 +42,9 @@ class ViewController: UIViewController {
     }
     
     @objc func showSheet(){
-        isShowSheet = true
-        let sheet = SheetContriller()
-        sheet.dismisAction = {
-            self.isShowSheet = false
-        }
+        let sheet = UIViewController()
         sheet.view.backgroundColor = .white
         present(sheet, animated: true, completion: nil)
-    }
-    
-    
-}
-
-
-class SheetContriller: UIViewController {
-    var dismisAction: (()->Void)?
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if let dismisAction = dismisAction{
-            dismisAction()
-        }
     }
 }
 
@@ -105,22 +58,12 @@ class CustomButton: UIButton {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         
-        var config = UIButton.Configuration.plain()
+        var config = UIButton.Configuration.filled()
         
         config.cornerStyle = .medium
-        config.background.backgroundColor = .systemMint
-        
-        config.baseForegroundColor = .white
+        tintColor = .systemOrange
         
         config.title = buttonTitle
-        
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.foregroundColor = UIColor.white
-            return outgoing
-        }
-        
-        config.imageColorTransformer = UIConfigurationColorTransformer { _ in UIColor.white }
         
         config.image = UIImage(systemName: "chevron.right.circle.fill")
         config.imagePadding = 8
